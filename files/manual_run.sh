@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 # NOTE: ensure TFC token is present as TOKEN env variable
 # usage: ./manual_run.sh <YOUR TFC ORG> <YOUR TFC WORKSPACE>
 TFC_ORG=$1
@@ -46,8 +45,6 @@ curl \
   --request POST \
   --data "$(echo $RUN_PAYLOAD)" \
   https://app.terraform.io/api/v2/runs | jq -r '.data'
-
-done
 
 fi
 fi
