@@ -131,3 +131,16 @@ resource "tfe_variable" "int_environment" {
 # }
 
 # manually trigger a run in cases where the first run is before variables are set
+resource "null_resource" "run" {
+  provisioner "local-exec" {
+    command = "${path.module}/files/manual_run.sh ${var.tfc_org} ${tfe_workspace.baseline.name}"
+
+    environment = {
+      TOKEN = var.tfc_token
+    }
+  }
+
+  depends_on = [
+    null_resource.agent,
+  ]
+}
