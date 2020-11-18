@@ -73,6 +73,14 @@ resource "tfe_variable" "account_name" {
   description  = "The name for the account"
 }
 
+resource "tfe_variable" "tfc_org" {
+  key          = "tfc_org"
+  value        = var.tfc_org
+  category     = "terraform"
+  workspace_id = tfe_workspace.baseline.id
+  description  = "The terraform organization name"
+}
+
 resource "tfe_variable" "environment" {
   key          = "environment"
   value        = var.environment
