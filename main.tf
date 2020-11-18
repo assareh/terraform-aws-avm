@@ -6,8 +6,6 @@ resource "github_repository" "baseline" {
   name        = "${var.name}-account-baseline"
   description = "account baseline"
 
-  visibility = "private"
-
   template {
     owner      = var.github_org
     repository = "terraform-aws-account-baseline"
@@ -17,8 +15,6 @@ resource "github_repository" "baseline" {
 resource "github_repository" "application" {
   name        = "${var.name}-resources"
   description = "My awesome codebase"
-
-  visibility = "private"
 
   template {
     owner      = var.github_org
