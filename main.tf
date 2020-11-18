@@ -81,6 +81,15 @@ resource "tfe_variable" "tfc_org" {
   description  = "The terraform organization name"
 }
 
+resource "tfe_variable" "tfc_token" {
+  key          = "TFE_TOKEN"
+  value        = var.tfc_token
+  category     = "env"
+  workspace_id = tfe_workspace.baseline.id
+  description  = "The terraform organization name"
+  sensitive    = true
+}
+
 resource "tfe_variable" "environment" {
   key          = "environment"
   value        = var.environment
@@ -121,3 +130,4 @@ resource "tfe_variable" "int_environment" {
 #   ]
 # }
 
+# manually trigger a run in cases where the first run is before variables are set
