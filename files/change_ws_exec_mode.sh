@@ -1,5 +1,8 @@
 #!/bin/bash
 
+apt-get update
+apt-get install -y curl jq
+
 # NOTE: ensure TFC token is present as TOKEN env variable
 # usage: ./change_ws_exec_mode.sh <YOUR TFC ORG> <YOUR AGENT POOL NAME> <YOUR TFC WORKSPACE> [Optionally additional workspaces]
 TFC_ORG=$1
