@@ -13,3 +13,7 @@ output "baseline_repo" {
 output "baseline_workspace" {
   value = tfe_workspace.baseline.name
 }
+
+output "developer_role" {
+  value = data.terraform_remote_state.baseline.outputs.developer_role
+}
