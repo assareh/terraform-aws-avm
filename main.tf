@@ -4,7 +4,7 @@ provider "github" {
 
 resource "github_repository" "baseline" {
   name        = "${var.name}-account-baseline"
-  description = "account baseline"
+  description = "Account baseline"
 
   template {
     owner      = var.github_org
@@ -144,3 +144,5 @@ resource "null_resource" "run" {
     null_resource.agent,
   ]
 }
+
+# add notifications to workspaces for tfc-agent scaling
