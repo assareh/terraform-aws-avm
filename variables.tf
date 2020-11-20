@@ -8,3 +8,4 @@ variable "oauth_token_id" {}
 
 variable "tfc_org" {}
 variable "tfc_token" {}
+variable "tfc_agent_pool" {}

@@ -24,13 +24,20 @@ resource "github_repository" "application" {
 
 provider "tfe" {
   token   = var.tfc_token
-  version = "~> 0.15.0"
+  version = "~> 0.23.0"
+}
+
+data "tfe_agent_pool" "aws" {
+  name         = var.tfc_agent_pool
+  organization = var.tfc_org
 }
 
 resource "tfe_workspace" "baseline" {
-  name         = github_repository.baseline.name
-  organization = var.tfc_org
-  auto_apply   = true
+  name           = github_repository.baseline.name
+  organization   = var.tfc_org
+  execution_mode = "agent"
+  agent_pool_id  = data.tfe_agent_pool.aws.id
+  auto_apply     = true
 
   vcs_repo {
     identifier     = github_repository.baseline.full_name
@@ -39,29 +46,15 @@ resource "tfe_workspace" "baseline" {
 }
 
 resource "tfe_workspace" "application" {
-  name         = github_repository.application.name
-  organization = var.tfc_org
+  name           = github_repository.application.name
+  organization   = var.tfc_org
+  execution_mode = "agent"
+  agent_pool_id  = data.tfe_agent_pool.aws.id
 
   vcs_repo {
     identifier     = github_repository.application.full_name
     oauth_token_id = var.oauth_token_id
   }
-}
-
-# set both workspaces to agent (tfe provider needs update https://github.com/hashicorp/terraform-provider-tfe/pull/242)
-resource "null_resource" "agent" {
-  provisioner "local-exec" {
-    command = "${path.module}/files/change_ws_exec_mode.sh ${var.tfc_org} aws-se_demos_dev ${tfe_workspace.baseline.name} ${tfe_workspace.application.name}"
-
-    environment = {
-      TOKEN = var.tfc_token
-    }
-  }
-
-  depends_on = [
-    tfe_workspace.baseline,
-    tfe_workspace.application,
-  ]
 }
 
 # required variables for account baseline
@@ -106,30 +99,6 @@ resource "tfe_variable" "int_environment" {
   description  = "Application account type prod vs non-prod"
 }
 
-# required variables for application workspace
-# resource "tfe_variable" "role_arn" {
-#   key          = "role_arn"
-#   value        = data.terraform_remote_state.baseline.outputs.developer_role
-#   category     = "terraform"
-#   workspace_id = tfe_workspace.application.id
-#   description  = "The AWS IAM role to assume"
-# }
-
-# data "terraform_remote_state" "baseline" {
-#   backend = "remote"
-
-#   config = {
-#     organization = var.tfc_org
-#     workspaces = {
-#       name = tfe_workspace.baseline.name
-#     }
-#   }
-
-#   depends_on = [
-#     tfe_workspace.baseline,
-#   ]
-# }
-
 # manually trigger a run in cases where the first run is before variables are set
 resource "null_resource" "run" {
   provisioner "local-exec" {
@@ -141,7 +110,11 @@ resource "null_resource" "run" {
   }
 
   depends_on = [
-    null_resource.agent,
+    tfe_variable.account_name,
+    tfe_variable.tfc_org,
+    tfe_variable.tfc_token,
+    tfe_variable.environment,
+    tfe_variable.int_environment,
   ]
 }
 
