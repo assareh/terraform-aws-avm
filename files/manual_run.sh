@@ -1,5 +1,8 @@
 #!/bin/bash
 
+apt-get update
+apt-get install -y curl jq
+
 # NOTE: ensure TFC token is present as TOKEN env variable
 # usage: ./manual_run.sh <YOUR TFC ORG> <YOUR TFC WORKSPACE>
 TFC_ORG=$1
